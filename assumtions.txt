@@ -9,5 +9,5 @@ message will be logged.
 3) I will try to make a custom logging mechanism which also routes all messages to a file, but I don't promise it, I'm
 a bit pressed by time... :(
 
-4) I will create two directories for the 2 parts, since functionality is not extended, but changes. There will be
-duplicate code, most likely. Both dirs will contain unit tests for their respective purpose
+4) I will create two classes for the 2 parts, since functionality is not extended, but changes. Will have driver code in
+main.py for both use cases
