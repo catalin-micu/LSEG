@@ -1,0 +1,10 @@
+1) Since nothing is mentioned about error handling or should happen if I try to turn on a light that is already on,
+I will assume no exception should be raised. I mean, I could raise exceptions in this case, but I believe, in a real
+product scenario where it's hard to keep trak of all 1 million lights, you would not want your command to fail just
+because of 1 light. If one slipped, it is what it is... This is just a personal UX opinion.
+
+2) If an invalid light position is given in a command, for eg (0, 1024), the command will simply be ignored and a
+message will be logged.
+
+3) I will try to make a custom logging mechanism which also routes all messages to a file, but I don't promise it, I'm
+a bit pressed by time... :(
