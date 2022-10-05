@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Any
 
 import numpy as np
 
@@ -7,9 +7,7 @@ import data_classes
 
 
 class LightsSystem:
-    # TODO create parent class if time allows? constructor, execute_instruction and calculate_on_lights are common
-    #  between par 1 and part 2
-    def __init__(self):
+    def __init__(self, default_value: Any = False, value_type: Any = bool):
         """
         For part 1
         Lights system controller that handles the instructions. The grid is a list of numpy arrays in order to cover the
@@ -19,7 +17,7 @@ class LightsSystem:
         """
         self.grid = []
         for i in range(const.GRID_DIMENSION):
-            self.grid.append(np.array([False] * const.GRID_DIMENSION, dtype=bool))
+            self.grid.append(np.array([default_value] * const.GRID_DIMENSION, dtype=value_type))
 
     def execute_multiple_instructions(self, instructions: List[data_classes.Instruction]):
         for ins in instructions:
@@ -72,3 +70,41 @@ class LightsSystem:
             nb_on_lights += sum(row)
 
         return nb_on_lights
+
+
+class UpgradedLightsSystem(LightsSystem):
+    def __init__(self):
+        super().__init__(default_value=0, value_type=int)
+
+    def execute_instruction(self, instruction: data_classes.Instruction):
+        """
+        Execute instruction based on command
+        :param instruction: dataclass that fully defines the instruction
+        """
+        if instruction.command == 'on':
+            self._execute(instruction.start, instruction.stop, value=1)
+        elif instruction.command == 'off':
+            self._execute(instruction.start, instruction.stop, value=-1)
+        else:
+            self._execute(instruction.start, instruction.stop, value=2)
+
+    def _execute(self, start: data_classes.Coordinate, stop: data_classes.Coordinate, value: int = None, **kwargs):
+        """
+        Generic method that can execute any type of instruction
+        :param **kwargs: placeholder for toggle
+        :param start: first affected light
+        :param stop: last affected light
+        :param value: value to add for each light
+        """
+        if stop.row == 0 and stop.column == 0:
+            return
+        if stop.row == start.row:
+            for i in range(start.column, stop.column + 1):
+                new_value = self.grid[start.row][i] + value
+                self.grid[start.row][i] = new_value if new_value >= 0 else 0
+            return
+
+        for i in range(start.row, stop.row + 1):
+            for j in range(start.column, stop.column + 1):
+                new_value = self.grid[i][j] + value
+                self.grid[i][j] = new_value if new_value >= 0 else 0
