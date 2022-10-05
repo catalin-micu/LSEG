@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 import numpy as np
 
@@ -21,8 +21,11 @@ class LightsSystem:
         for i in range(const.GRID_DIMENSION):
             self.grid.append(np.array([False] * const.GRID_DIMENSION, dtype=bool))
 
+    def execute_multiple_instructions(self, instructions: List[data_classes.Instruction]):
+        for ins in instructions:
+            self.execute_instruction(ins)
+
     def execute_instruction(self, instruction: data_classes.Instruction):
-        # TODO create method which runs a list of instructions
         """
         Execute instruction based on command
         :param instruction: dataclass that fully defines the instruction
@@ -48,8 +51,14 @@ class LightsSystem:
         :param stop: last affected light
         :param value: new value of each light
         :param toggle: whether to toggle or not
-        :return:
         """
+        if stop.row == 0 and stop.column == 0:
+            return
+        if stop.row == start.row:
+            for i in range(start.column, stop.column + 1):
+                self.grid[start.row][i] = value if not toggle else not self.grid[start.row][i]
+            return
+
         for i in range(start.column, const.GRID_DIMENSION):
             self.grid[start.row][i] = value if not toggle else not self.grid[start.row][i]
 
@@ -63,7 +72,6 @@ class LightsSystem:
     def calculate_on_lights(self) -> int:
         """
         Calculate how many lights are on in total; a light is on if on its grid coordinate the value is True
-        :return:
         """
         nb_on_lights = 0
         for row in self.grid:

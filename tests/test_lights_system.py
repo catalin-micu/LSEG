@@ -36,7 +36,13 @@ def test_calculate_on_lights(monkeypatch):
 @pytest.mark.parametrize(
     'start, stop, value, toggle, on_lights',
     [
-        (data_classes.Coordinate(0, 0), data_classes.Coordinate(9, 9), True, False, 100)
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(9, 9), True, False, 100),
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(9, 9), False, True, 100),
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(9, 9), False, False, 0),
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(0, 0), True, False, 0),
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(0, 4), True, False, 5),
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(1, 4), True, False, 15),
+        (data_classes.Coordinate(1, 2), data_classes.Coordinate(5, 4), True, False, 43)
     ]
 )
 def test__execute(monkeypatch, start, stop, value, toggle, on_lights):
@@ -49,3 +55,11 @@ def test__execute(monkeypatch, start, stop, value, toggle, on_lights):
         actual += sum(row)
 
     assert actual == on_lights
+
+
+def test_execute_multiple_instructions(monkeypatch, mocker):
+    mocked_execute_instruction = mocker.patch('lights_system.LightsSystem.execute_instruction')
+    monkeypatch.setattr('const.GRID_DIMENSION', 10)
+    ls = lights_system.LightsSystem()
+    ls.execute_multiple_instructions([None])
+    mocked_execute_instruction.assert_called_once()

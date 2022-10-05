@@ -2,6 +2,7 @@
 I will assume no exception should be raised. I mean, I could raise exceptions in this case, but I believe, in a real
 product scenario where it's hard to keep trak of all 1 million lights, you would not want your command to fail just
 because of 1 light. If one slipped, it is what it is... This is just a personal UX opinion.
+    Nvm, read instructions result more carefully, this is actually what you want.
 
 2) If an invalid light position is given in a command, for eg (0, 1024), the command will simply be ignored and a
 message will be logged.
