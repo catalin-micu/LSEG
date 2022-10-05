@@ -1,5 +1,6 @@
+from typing import Optional
+
 import numpy as np
-from array import array
 
 import const
 import data_classes
@@ -27,21 +28,37 @@ class LightsSystem:
         :param instruction: dataclass that fully defines the instruction
         """
         # I am not satisfied with this if/else, there is duplicate code, but I don't see anything better rn
-        if instruction.command == 'turn on':
-            self.turn_on(instruction.start, instruction.stop)
-        elif instruction.command == 'turn off':
-            self.turn_off(instruction.start, instruction.stop)
+        if instruction.command == 'on':
+            self._execute(instruction.start, instruction.stop, value=True)
+        elif instruction.command == 'off':
+            self._execute(instruction.start, instruction.stop, value=False)
         else:
-            self.toggle(instruction.start, instruction.stop)
+            self._execute(instruction.start, instruction.stop, toggle=True)
 
-    def turn_on(self, start: data_classes.Coordinate, stop: data_classes.Coordinate):
-        pass
+    def _execute(
+            self,
+            start: data_classes.Coordinate,
+            stop: data_classes.Coordinate,
+            value: Optional[bool] = None,
+            toggle: bool = False
+    ):
+        """
+        Generic method that can execute any type of instruction
+        :param start: first affected light
+        :param stop: last affected light
+        :param value: new value of each light
+        :param toggle: whether to toggle or not
+        :return:
+        """
+        for i in range(start.column, const.GRID_DIMENSION):
+            self.grid[start.row][i] = value if not toggle else not self.grid[start.row][i]
 
-    def turn_off(self, start: data_classes.Coordinate, stop: data_classes.Coordinate):
-        pass
+        for i in range(start.row + 1, stop.row):
+            for j in range(const.GRID_DIMENSION):
+                self.grid[i][j] = value if not toggle else not self.grid[i][j]
 
-    def toggle(self, start: data_classes.Coordinate, stop: data_classes.Coordinate):
-        pass
+        for i in range(stop.column + 1):
+            self.grid[stop.row][i] = value if not toggle else not self.grid[stop.row][i]
 
     def calculate_on_lights(self) -> int:
         """

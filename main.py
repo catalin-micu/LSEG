@@ -1,10 +1,23 @@
 import lights_system
+import data_classes
 
 
 if __name__ == '__main__':
     ls = lights_system.LightsSystem()
-    ls.grid[0][0] = 1
-    ls.grid[0][5] = 1
-    ls.grid[9][9] = 1
+
+    ls.execute_instruction(
+        data_classes.Instruction(
+            'on',
+            data_classes.Coordinate(0, 0),
+            data_classes.Coordinate(9, 9)
+        )
+    )
+    ls.execute_instruction(
+        data_classes.Instruction(
+            'off',
+            data_classes.Coordinate(1, 2),
+            data_classes.Coordinate(5, 4)
+        )
+    )
     r = ls.calculate_on_lights()
     a=2
