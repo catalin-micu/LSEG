@@ -41,8 +41,9 @@ def test_calculate_on_lights(monkeypatch):
         (data_classes.Coordinate(0, 0), data_classes.Coordinate(9, 9), False, False, 0),
         (data_classes.Coordinate(0, 0), data_classes.Coordinate(0, 0), True, False, 0),
         (data_classes.Coordinate(0, 0), data_classes.Coordinate(0, 4), True, False, 5),
-        (data_classes.Coordinate(0, 0), data_classes.Coordinate(1, 4), True, False, 15),
-        (data_classes.Coordinate(1, 2), data_classes.Coordinate(5, 4), True, False, 43)
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(1, 4), True, False, 10),
+        (data_classes.Coordinate(1, 2), data_classes.Coordinate(5, 4), True, False, 15),
+        (data_classes.Coordinate(0, 0), data_classes.Coordinate(2, 2), True, False, 9)
     ]
 )
 def test__execute(monkeypatch, start, stop, value, toggle, on_lights):

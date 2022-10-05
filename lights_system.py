@@ -59,15 +59,9 @@ class LightsSystem:
                 self.grid[start.row][i] = value if not toggle else not self.grid[start.row][i]
             return
 
-        for i in range(start.column, const.GRID_DIMENSION):
-            self.grid[start.row][i] = value if not toggle else not self.grid[start.row][i]
-
-        for i in range(start.row + 1, stop.row):
-            for j in range(const.GRID_DIMENSION):
+        for i in range(start.row, stop.row + 1):
+            for j in range(start.column, stop.column + 1):
                 self.grid[i][j] = value if not toggle else not self.grid[i][j]
-
-        for i in range(stop.column + 1):
-            self.grid[stop.row][i] = value if not toggle else not self.grid[stop.row][i]
 
     def calculate_on_lights(self) -> int:
         """
