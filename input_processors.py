@@ -1,7 +1,11 @@
 import pathlib
 from typing import Generator, Union
 
+import custom_logger
 import data_classes
+
+
+module_logger = custom_logger.create_logger(__name__)
 
 
 def read_instructions(path_to_file: Union[str, pathlib.Path]) -> Generator:
@@ -39,6 +43,10 @@ def create_instruction_object(str_ins: str) -> data_classes.Instruction:
 
 def validate_start_and_stop(start: data_classes.Coordinate, stop: data_classes.Coordinate):
     if stop.row < start.row:
+        module_logger.error('Encountered element where stop.row < start.row. Terminating execution...')
         raise ValueError('Stop row cannot be smaller than start row')
     if stop.row == start.row and stop.column < start.column:
+        module_logger.error(
+            'Encountered element where stop.row = start.row and stop.column < start.column. Terminating execution...'
+        )
         raise ValueError('When start and stop are on the same row, stop column cannot be smaller than start column')

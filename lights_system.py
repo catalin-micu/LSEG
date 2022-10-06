@@ -4,6 +4,10 @@ import numpy as np
 
 import const
 import data_classes
+import custom_logger
+
+
+module_logger = custom_logger.create_logger(__name__)
 
 
 class LightsSystem:
@@ -15,9 +19,11 @@ class LightsSystem:
         using numpy arrays strictly to restrict the types of the items inside. This make calculate_on_lights method much
         easier to implement.
         """
+        self.logger = module_logger
         self.grid = []
         for i in range(const.GRID_DIMENSION):
             self.grid.append(np.array([default_value] * const.GRID_DIMENSION, dtype=value_type))
+        self.logger.debug(f'Initialized {self.__class__.__name__} with {const.GRID_DIMENSION} grid dimensions')
 
     def execute_multiple_instructions(self, instructions: List[data_classes.Instruction]):
         for ins in instructions:
@@ -29,6 +35,7 @@ class LightsSystem:
         :param instruction: dataclass that fully defines the instruction
         """
         # I am not satisfied with this if/else, there is duplicate code, but I don't see anything better rn
+        self.logger.debug(f'Executing instruction "{instruction}"')
         if instruction.command == 'on':
             self._execute(instruction.start, instruction.stop, value=True)
         elif instruction.command == 'off':
@@ -51,7 +58,9 @@ class LightsSystem:
         :param toggle: whether to toggle or not
         """
         if stop.row == 0 and stop.column == 0:
+            self.logger.warning(f'Encountered useless instruction; stop coordinate is (0, 0). Skipping...')
             return
+
         if stop.row == start.row:
             for i in range(start.column, stop.column + 1):
                 self.grid[start.row][i] = value if not toggle else not self.grid[start.row][i]
@@ -65,6 +74,7 @@ class LightsSystem:
         """
         Calculate how many lights are on in total; a light is on if on its grid coordinate the value is True
         """
+        self.logger.debug('Calculating grid status...')
         nb_on_lights = 0
         for row in self.grid:
             nb_on_lights += sum(row)
@@ -81,6 +91,7 @@ class UpgradedLightsSystem(LightsSystem):
         Execute instruction based on command
         :param instruction: dataclass that fully defines the instruction
         """
+        self.logger.debug(f'Executing instruction "{instruction}"')
         if instruction.command == 'on':
             self._execute(instruction.start, instruction.stop, value=1)
         elif instruction.command == 'off':
@@ -97,6 +108,7 @@ class UpgradedLightsSystem(LightsSystem):
         :param value: value to add for each light
         """
         if stop.row == 0 and stop.column == 0:
+            self.logger.warning(f'Encountered useless instruction; stop coordinate is (0, 0). Skipping...')
             return
         if stop.row == start.row:
             for i in range(start.column, stop.column + 1):
